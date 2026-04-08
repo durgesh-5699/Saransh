@@ -1,11 +1,9 @@
-import React from 'react'
+import { Button } from "@/components/ui/button";
 
-const page = () => {
+export default function Home() {
   return (
-    <div>
-      
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <Button variant='outline'>Shadcn button</Button>
     </div>
-  )
+  );
 }
-
-export default page
