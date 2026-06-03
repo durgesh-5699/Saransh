@@ -4,8 +4,9 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/common/header";
 import Footer from "@/components/common/footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Saransh",
@@ -18,15 +19,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn("h-full", "antialiased", "font-sans", geist.variable)}
-    >
-      <body className="relative min-h-screen flex flex-col">
-        <Header/>
-        <main className="flex-1">{children}</main>
-        <Footer/>
+    <ClerkProvider>
+      <html
+        lang="en"
+        className={cn("h-full", "antialiased", "font-sans", geist.variable)}
+      >
+        <body className="relative min-h-screen flex flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
         </body>
-    </html>
+      </html>
+    </ClerkProvider>
   );
 }
