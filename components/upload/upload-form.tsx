@@ -2,7 +2,7 @@
 import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   file: z
@@ -16,22 +16,18 @@ const schema = z.object({
 });
 
 export default function UploadForm() {
-  const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
+  const { startUpload } = useUploadThing("pdfUploader", {
     onClientUploadComplete: () => {
       console.log("uploaded successfully!");
-      toast.success("PDF uploaded successfully!");
     },
 
     onUploadError: (error) => {
       console.error("error occurred while uploading", error);
-
-      toast.error("Error occurred while uploading", {
-        description: error.message,
-      });
+      toast.error(`Error occurred while uploading \n ${error.message}`);
     },
 
-    onUploadBegin: ({ file }) => {
-      console.log("upload has begun for", file);
+    onUploadBegin: (fileName) => {
+      console.log("upload has begun for", fileName);
     },
   });
 
@@ -49,38 +45,31 @@ export default function UploadForm() {
     if (!validatedFields.success) {
       console.log(validatedFields.error.issues?.[0] ?? "Invalid file");
 
-      toast.error("Something went wrong", {
-        description:
-          validatedFields.error.issues?.[0].message ?? "Invalid file",
-      });
+      toast.error(
+        `Something went wrong \n ${validatedFields.error.issues?.[0].message ?? "Invalid file"}`,
+      );
 
       return;
     }
 
-    toast.loading("Uploading PDF...", {
-      description: "We are uploading your PDF!",
-      id: "upload-pdf",
-    });
+    toast.loading(`Uploading PDF... \n We are uploading your PDF!`);
 
     //upload the file to uploadthing
+
     const response = await startUpload([file]);
-
+    toast.dismiss();
     if (!response) {
-      toast.error("Something went wrong", {
-        description: "Please use a different file.",
-      });
-
+      toast.error(`Something went wrong \n Please use a different file.`);
       return;
     }
 
-    toast.success("Upload completed!", {
-      description: "Your PDF has been uploaded successfully.",
-      id: "upload-pdf",
-    });
+    
+    toast.success("PDF uploaded successfully!");
+    toast.dismiss();
 
-    toast.info("Processing PDF...", {
-      description: "Hang tight! Our AI is reading your document! ✨",
-    });
+    toast.info(
+      `Processing PDF... \n Hang tight! Our AI is reading your document! ✨`,
+    );
 
     //parse the pdf using langchain
     //summarize the pdf using AI

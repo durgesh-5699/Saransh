@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/common/header";
 import Footer from "@/components/common/footer";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "sonner";
+import { ToastContainer } from "react-toastify";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -29,7 +29,15 @@ export default function RootLayout({
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-          <Toaster />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            closeOnClick={false}
+            pauseOnHover={false}
+            draggable={true}
+            theme="light"
+          />
         </body>
       </html>
     </ClerkProvider>
