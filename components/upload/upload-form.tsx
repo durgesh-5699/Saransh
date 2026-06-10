@@ -3,6 +3,7 @@ import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
 import { toast } from "react-toastify";
+import generatePdfSummary from "@/actions/upload-actions";
 
 const schema = z.object({
   file: z
@@ -44,18 +45,12 @@ export default function UploadForm() {
     //validating the fields
     if (!validatedFields.success) {
       console.log(validatedFields.error.issues?.[0] ?? "Invalid file");
-
-      toast.error(
-        `Something went wrong \n ${validatedFields.error.issues?.[0].message ?? "Invalid file"}`,
-      );
-
+      toast.error(`Something went wrong \n ${validatedFields.error.issues?.[0].message ?? "Invalid file"}`);
       return;
     }
 
     toast.loading(`Uploading PDF... \n We are uploading your PDF!`);
-
     //upload the file to uploadthing
-
     const response = await startUpload([file]);
     toast.dismiss();
     if (!response) {
@@ -66,12 +61,15 @@ export default function UploadForm() {
     
     toast.success("PDF uploaded successfully!");
     toast.dismiss();
+    //parse the pdf using langchain
+    console.log("this is respone :-> ",response);
+    const summary = await generatePdfSummary(response);
+    console.log({summary})
 
     toast.info(
       `Processing PDF... \n Hang tight! Our AI is reading your document! ✨`,
     );
 
-    //parse the pdf using langchain
     //summarize the pdf using AI
     //save the summary to database
     //redirect to the [id] summary page
