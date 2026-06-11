@@ -60,12 +60,9 @@ export default function UploadForm() {
 
     
     toast.success("PDF uploaded successfully!");
-    toast.dismiss();
     //parse the pdf using langchain
-    console.log("this is respone :-> ",response);
     const summary = await generatePdfSummary(response);
-    console.log({summary})
-
+    toast.dismiss();
     toast.info(
       `Processing PDF... \n Hang tight! Our AI is reading your document! ✨`,
     );
