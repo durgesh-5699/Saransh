@@ -63,8 +63,10 @@ export default async function generatePdfSummary(
 
         return {
             success: true,
-            message: 'PDF parsed successfully',
-            data: pdfText, 
+            message: 'Summary generated successfuly',
+            data: {
+                summary : summaryMarkdown,
+                }
         };
     } catch(error){
         console.error("Error generating summary:", error); 
