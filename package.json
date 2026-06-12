@@ -13,6 +13,7 @@
     "@langchain/community": "^1.1.29",
     "@langchain/core": "^1.1.48",
     "@langchain/groq": "^1.2.1",
+    "@neondatabase/serverless": "^1.1.0",
     "@uploadthing/react": "^7.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
