@@ -3,7 +3,7 @@ import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import generatePdfSummary from "@/actions/upload-actions";
+import generatePdfSummary, { storePdfSummaryAction } from "@/actions/upload-actions";
 import { useRef, useState } from "react";
 
 const schema = z.object({
@@ -75,10 +75,20 @@ export default function UploadForm() {
       const { data = null, message = null } = result || {};
 
       if (data) {
+        let storeResult : any;
         toast.info(`Hang tight! We are saving your summary! ✨`);
-        formRef.current?.reset();
+        
         if(data.summary){
-          
+          console.log("data.summary from upload-form.ts");
+          storeResult = await storePdfSummaryAction({
+            summary : data.summary,
+            fileUrl : response[0].serverData.file.url,
+            title : data.title || file.name,
+            fileName : file.name,
+          });
+
+          toast.success(`Your PDF has been successfully summarized and saved ✨`);
+          formRef.current?.reset();
         }
       }
 

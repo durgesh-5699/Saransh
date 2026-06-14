@@ -1,8 +1,8 @@
-'user server'
+'use server'
 
 import {neon} from "@neondatabase/serverless"
 
-export default function getDBConnection(){
+export default async function getDBConnection(){
     if(!process.env.DATABASE_URL){
         throw new Error('Neon Database URL is not defined')
     }
