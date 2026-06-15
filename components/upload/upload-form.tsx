@@ -5,6 +5,7 @@ import { z } from "zod";
 import { toast } from "react-toastify";
 import generatePdfSummary, { storePdfSummaryAction } from "@/actions/upload-actions";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   file: z
@@ -20,6 +21,7 @@ const schema = z.object({
 export default function UploadForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [loading,setIsLoading] = useState(false);
+  const router = useRouter();
 
   const { startUpload } = useUploadThing("pdfUploader", {
     onClientUploadComplete: () => {
@@ -81,14 +83,15 @@ export default function UploadForm() {
         if(data.summary){
           console.log("data.summary from upload-form.ts");
           storeResult = await storePdfSummaryAction({
-            summary : data.summary,
-            fileUrl : response[0].serverData.file.url,
-            title : data.title || file.name,
-            fileName : file.name,
+            summary : data?.summary,
+            fileUrl : response[0]?.serverData.file.url,
+            title : data?.title || file?.name,
+            fileName : file?.name,
           });
 
           toast.success(`Your PDF has been successfully summarized and saved ✨`);
-          formRef.current?.reset();
+          formRef.current?.reset(); 
+          router.push(`/summaries/${storeResult.id}`)
         }
       }
 

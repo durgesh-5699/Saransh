@@ -6,6 +6,7 @@ import { formatFileNameAsTitle } from "@/utils/format-utils";
 import { SUMMARY_SYSTEM_PROMPT } from "@/utils/prompts";
 import { auth } from "@clerk/nextjs/server";
 import {ChatGroq} from "@langchain/groq"
+import { revalidatePath } from "next/cache";
 
 interface pdfSummaryType {
     userId :string;
@@ -121,9 +122,7 @@ export async function storePdfSummaryAction({fileUrl,summary,title,fileName} : p
             message:'User not found',
             }
         }
-        console.log("Before savePdfSummary")
         savedSummary = await savePdfSummary({userId,fileUrl,summary,title,fileName});
-        console.log("After savePdfSummary")
 
         if(!savedSummary){
             return {
@@ -133,19 +132,21 @@ export async function storePdfSummaryAction({fileUrl,summary,title,fileName} : p
         }
 
         const formatedFileName = formatFileNameAsTitle(fileName);
-
-        return {
-            success:true,
-            message:'PDF Summary saved successfully',
-            data :{
-                title:fileName,
-                savedSummary
-            }
-        }
     }catch(error){
         return {
             success: false,
             message:error instanceof Error ? error.message : 'Error saving pdf summary',
+        }
+    }
+
+    revalidatePath(`/summaries/${savedSummary.id}`)
+    return {
+        success:true,
+        message:'PDF Summary saved successfully',
+        data :{
+            title:fileName,
+            id:savedSummary.id,
+            savedSummary
         }
     }
 }
