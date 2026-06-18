@@ -91,6 +91,7 @@ export default function UploadForm() {
 
           toast.success(`Your PDF has been successfully summarized and saved ✨`);
           formRef.current?.reset(); 
+          console.log("this is storeResult : ",storeResult);
           router.push(`/summaries/${storeResult.id}`)
         }
       }
