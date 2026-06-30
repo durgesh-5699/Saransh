@@ -82,6 +82,7 @@ export default function UploadForm() {
         
         if(data.summary){
           console.log("data.summary from upload-form.ts");
+          //summarize the pdf using AI and save the summary to database
           storeResult = await storePdfSummaryAction({
             summary : data?.summary,
             fileUrl : response[0]?.serverData.file.url,
@@ -92,13 +93,10 @@ export default function UploadForm() {
           toast.success(`Your PDF has been successfully summarized and saved ✨`);
           formRef.current?.reset(); 
           console.log("this is storeResult : ",storeResult);
+          //redirect to the [id] summary page
           router.push(`/summaries/${storeResult.data.id}`)
         }
       }
-
-      //summarize the pdf using AI
-      //save the summary to database
-      //redirect to the [id] summary page
     } catch (error) {
       console.log("error occured", error);
       setIsLoading(false);
