@@ -11,9 +11,9 @@ export default async function Layout({children}:{children:React.ReactNode}){
     if(!user?.id) redirect('/sign-in');
 
     const hasActiveSubscription = await hasActivePlan(user.emailAddresses[0].emailAddress);
-    // if(!hasActiveSubscription){
-    //     return <UpgradeRequired />
-    // }
+    if(!hasActiveSubscription){
+        return <UpgradeRequired />
+    }
 
     return <>{children}</>
 }

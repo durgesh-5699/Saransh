@@ -27,3 +27,51 @@ export const pricingPlans = [
     priceId: process.env.NODE_ENV==='development' ? 'price_1TlpX4Rwcoe7RzdZr7esGJFw':'',
   },
 ];
+
+export const containerVariants = {
+  hidden:{opacity:0},
+  visible : {
+    opacity :1,
+    transition:{
+      staggerChildren:0.2,
+      delayChildren:0.1,
+    }
+  }
+}
+
+export const itemVariants = {
+  hidden:{opacity:0 , y:20},
+  visible : {
+    opacity :1,
+    transition:{
+      type:'string',
+      damping:15,
+      stiffness:50,
+      duration:0.8,
+    }
+  }
+}
+
+export const buttonVariants = {
+  scale:1.05,
+    transition:{
+      type:'string',
+      damping:10,
+      stiffness:300,
+    }
+}
+
+export const listVariants={
+  hidden:{opacity:0,x:-20},
+  visible:{
+    opacity:1,
+    x:0,
+    transition:{
+      type:'spring',
+      damping:20,
+      stiffness:100,
+    }
+  }
+}
+
+export const Dummy_Summary = "hy this is durgesh"

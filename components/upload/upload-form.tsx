@@ -3,7 +3,9 @@ import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import generatePdfSummary, { storePdfSummaryAction } from "@/actions/upload-actions";
+import generatePdfSummary, {
+  storePdfSummaryAction,
+} from "@/actions/upload-actions";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +22,7 @@ const schema = z.object({
 
 export default function UploadForm() {
   const formRef = useRef<HTMLFormElement>(null);
-  const [loading,setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const { startUpload } = useUploadThing("pdfUploader", {
@@ -77,24 +79,26 @@ export default function UploadForm() {
       const { data = null, message = null } = result || {};
 
       if (data) {
-        let storeResult : any;
+        let storeResult: any;
         toast.info(`Hang tight! We are saving your summary! ✨`);
-        
-        if(data.summary){
+
+        if (data.summary) {
           console.log("data.summary from upload-form.ts");
           //summarize the pdf using AI and save the summary to database
           storeResult = await storePdfSummaryAction({
-            summary : data?.summary,
-            fileUrl : response[0]?.serverData.file.url,
-            title : data?.title || file?.name,
-            fileName : file?.name,
+            summary: data?.summary,
+            fileUrl: response[0]?.serverData.file.url,
+            title: data?.title || file?.name,
+            fileName: file?.name,
           });
 
-          toast.success(`Your PDF has been successfully summarized and saved ✨`);
-          formRef.current?.reset(); 
-          console.log("this is storeResult : ",storeResult);
+          toast.success(
+            `Your PDF has been successfully summarized and saved ✨`,
+          );
+          formRef.current?.reset();
+          console.log("this is storeResult : ", storeResult);
           //redirect to the [id] summary page
-          router.push(`/summaries/${storeResult.data.id}`)
+          router.push(`/summaries/${storeResult.data.id}`);
         }
       }
     } catch (error) {
@@ -106,7 +110,38 @@ export default function UploadForm() {
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto">
-      <UploadFormInput loading={loading} ref={formRef} onSubmit={handleSubmit} />
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t border-gray-200 dark:border-gray-800" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-background px-3 text-muted-foreground text-sm">
+            Upload PDF
+          </span>
+        </div>
+      </div>
+      <UploadFormInput
+        loading={loading}
+        ref={formRef}
+        onSubmit={handleSubmit}
+      />
+      {loading && (
+        <>
+          <div className="relative">
+            <div
+              className="absolute inset-0 flex items-center"
+              aria-hidden="true"
+            >
+              <div className="w-full border-t border-gray-200 dark:border-gray-800" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-background px-3 text-muted-foreground text-sm">
+                Processing
+              </span>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
