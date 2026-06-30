@@ -92,7 +92,7 @@ export default function UploadForm() {
           toast.success(`Your PDF has been successfully summarized and saved ✨`);
           formRef.current?.reset(); 
           console.log("this is storeResult : ",storeResult);
-          router.push(`/summaries/${storeResult.id}`)
+          router.push(`/summaries/${storeResult.data.id}`)
         }
       }
 
@@ -112,10 +112,3 @@ export default function UploadForm() {
     </div>
   );
 }
-
-/*
-    toast.dismiss();
-    toast.info(
-      `Processing PDF... \n Hang tight! Our AI is reading your document! ✨`,
-    );
-*/
