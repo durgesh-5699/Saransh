@@ -2,13 +2,31 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { MotionDiv, MotionH1, MotionH2, MotionSection, MotionSpan } from "../common/motion-wrapper";
-import { buttonVariants, containerVariants, itemVariants } from "@/utils/constants";
+import {
+  MotionDiv,
+  MotionH1,
+  MotionH2,
+  MotionSection,
+  MotionSpan,
+} from "../common/motion-wrapper";
+import {
+  buttonVariants,
+  containerVariants,
+  itemVariants,
+} from "@/utils/constants";
 
 export default function HomeSection() {
   return (
-    <MotionSection variants={containerVariants} initial='hidden' animate='visible' className="relative mx-auto flex flex-col z-0 items-center justify-center py-16 sm:py-20 lg:pb-28 transition-all animate-in lg:px-12 max-w-7xl">
-      <MotionDiv variants={itemVariants} className="relative p-[1px] overflow-hidden rounded-full bg-linear-to-r from-rose-200 via-rose-500 to-rose-800 animate-gradient-x group">
+    <MotionSection
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="relative mx-auto flex flex-col z-0 items-center justify-center py-16 sm:py-20 lg:pb-28 transition-all animate-in lg:px-12 max-w-7xl"
+    >
+      <MotionDiv
+        variants={itemVariants}
+        className="relative p-[1px] overflow-hidden rounded-full bg-linear-to-r from-rose-200 via-rose-500 to-rose-800 animate-gradient-x group"
+      >
         <Badge
           variant={"secondary"}
           className="relative px-6 py-2 text-base font-medium bg-white rounded-full group-hover:bg-gray-50 transition-colors duration-200"
@@ -29,7 +47,10 @@ export default function HomeSection() {
         </span>{" "}
         summaries
       </MotionH1>
-      <MotionH2 variants={itemVariants} className="text-lg sm:text-xl lg:text-2xl text-center px-4 lg:px-0 lg:max-w-4xl text-gray-600">
+      <MotionH2
+        variants={itemVariants}
+        className="text-lg sm:text-xl lg:text-2xl text-center px-4 lg:px-0 lg:max-w-4xl text-gray-600"
+      >
         Get a beautiful summary reel of documents in seconds.
       </MotionH2>
       <MotionDiv variants={itemVariants} whileHover={buttonVariants}>

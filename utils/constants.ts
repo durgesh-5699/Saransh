@@ -1,3 +1,5 @@
+import { Variants } from "motion/react";
+
 export const pricingPlans = [
   {
     id: "basic",
@@ -28,7 +30,7 @@ export const pricingPlans = [
   },
 ];
 
-export const containerVariants = {
+export const containerVariants: Variants = {
   hidden:{opacity:0},
   visible : {
     opacity :1,
@@ -39,12 +41,12 @@ export const containerVariants = {
   }
 }
 
-export const itemVariants = {
+export const itemVariants: Variants = {
   hidden:{opacity:0 , y:20},
   visible : {
     opacity :1,
     transition:{
-      type:'string',
+      type:'spring',
       damping:15,
       stiffness:50,
       duration:0.8,
@@ -52,16 +54,16 @@ export const itemVariants = {
   }
 }
 
-export const buttonVariants = {
+export const buttonVariants= {
   scale:1.05,
     transition:{
-      type:'string',
+      type:'spring' as const,
       damping:10,
       stiffness:300,
     }
 }
 
-export const listVariants={
+export const listVariants: Variants ={
   hidden:{opacity:0,x:-20},
   visible:{
     opacity:1,
