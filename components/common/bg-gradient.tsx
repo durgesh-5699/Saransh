@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 export default function BgGradient({
   className
 }: {
-  clasName?: string;
+  className?: string;
 }) {
   return (
       <div
