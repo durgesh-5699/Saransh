@@ -98,7 +98,7 @@ export default async function generatePdfSummary({
     }
 }
 
-async function savePdfSummary({userId,fileUrl,summary,title,fileName}:pdfSummaryType){
+async function savePdfSummary({userId,fileUrl,summary,title,fileName}:pdfSummaryType ){
     try {
         const sql = await getDBConnection();
         const [savedSummary] = await sql `INSERT INTO pdf_summaries (
@@ -121,7 +121,7 @@ async function savePdfSummary({userId,fileUrl,summary,title,fileName}:pdfSummary
     }
 }
 
-export async function storePdfSummaryAction({fileUrl,summary,title,fileName} : pdfSummaryType){
+export async function storePdfSummaryAction({fileUrl,summary,title,fileName} : Omit<pdfSummaryType, "userId">){
 
     let savedSummary:any;
     try{

@@ -82,28 +82,29 @@ export default function UploadForm() {
       toast.dismiss();
       let storeResult: any;
       toast.info(`Hang tight! We are saving your summary! ✨`);
-      
+
       const formatedFileName = formatFileNameAsTitle(file?.name);
       //parse the pdf using langchain
       const result = await generatePdfText({
         fileUrl: uploadFieUrl,
-      })
+      });
       //generate pdf sumary using AI
       const summaryResult = await generatePdfSummary({
-        pdfText:result?.data?.pdfText??'',
-        fileName:formatedFileName,
+        pdfText: result?.data?.pdfText ?? "",
+        fileName: formatedFileName,
       });
 
-      const {data=null,message=null} = summaryResult || {};
-      if(data?.summary) {
+      const { data = null, message = null } = summaryResult || {};
+      if (data?.summary) {
+        const finalSummary = typeof data.summary === "string"? data.summary: JSON.stringify(data.summary);
         //save the summary to database
         storeResult = await storePdfSummaryAction({
-          summary: data?.summary,
+          summary: finalSummary,
           fileUrl: uploadFieUrl,
           title: formatedFileName,
           fileName: file?.name,
         });
-        
+
         toast.dismiss();
         toast.success(`Your PDF has been successfully summarized and saved ✨`);
         formRef.current?.reset();
@@ -151,7 +152,6 @@ export default function UploadForm() {
           </div>
 
           <LoadingSkeleton />
-
         </>
       )}
     </div>
