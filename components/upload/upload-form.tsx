@@ -38,8 +38,8 @@ export default function UploadForm() {
       toast.error(`Error occurred while uploading \n ${error.message}`);
     },
 
-    onUploadBegin: (fileName) => {
-      console.log("upload has begun for", fileName);
+    onUploadBegin: (data) => {
+      console.log("upload has begun for", data);
     },
   });
 
@@ -78,7 +78,7 @@ export default function UploadForm() {
 
       toast.success("PDF uploaded successfully!");
 
-      const uploadFieUrl = uploadResponse[0]?.serverData?.file?.url;
+      const uploadFieUrl = uploadResponse[0]?.serverData?.fileUrl;
       toast.dismiss();
       let storeResult: any;
       toast.info(`Hang tight! We are saving your summary! ✨`);
