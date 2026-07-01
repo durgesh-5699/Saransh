@@ -22,8 +22,3 @@ export async function hasReachedUploadLimit(userId:string){
 
     return {hasReachedLimit:uploadCount>=uploadLimit , uploadLimit};
 }
-// TODO
-// export async function getSubscriptionStatus(user:User){
-//     const hasSubscription = await hasActivePlan(user.emailAddresses[0].emailAddress);
-//     return hasSubscription ;
-// }
