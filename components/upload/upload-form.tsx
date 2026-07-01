@@ -4,11 +4,13 @@ import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
 import { toast } from "react-toastify";
 import generatePdfSummary, {
+  generatePdfText,
   storePdfSummaryAction,
 } from "@/actions/upload-actions";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LoadingSkeleton } from "./loading-skeleton";
+import { formatFileNameAsTitle } from "@/utils/format-utils";
 
 const schema = z.object({
   file: z
@@ -65,31 +67,41 @@ export default function UploadForm() {
 
       toast.loading(`Uploading PDF... \n We are uploading your PDF!`);
       //upload the file to uploadthing
-      const response = await startUpload([file]);
+      const uploadResponse = await startUpload([file]);
       toast.dismiss();
-      if (!response) {
+      if (!uploadResponse) {
         toast.error(`Something went wrong \n Please use a different file.`);
         setIsLoading(false);
         return;
       }
 
       toast.success("PDF uploaded successfully!");
+
+      const uploadFieUrl = uploadResponse[0]?.serverData?.file?.url;
       //parse the pdf using langchain
-      const result = await generatePdfSummary(response);
 
-      const { data = null, message = null } = result || {};
 
-      if (data) {
         let storeResult: any;
         toast.info(`Hang tight! We are saving your summary! ✨`);
+          
+          const formatedFileName = formatFileNameAsTitle(file?.name);
 
-        if (data.summary) {
-          console.log("data.summary from upload-form.ts");
+          const result = await generatePdfText({
+            fileUrl: uploadFieUrl,
+          })
+           const summaryResult = await generatePdfSummary({
+            pdfText:result?.data?.pdfText??'',
+            fileName:formatedFileName,
+          });
+
+          const {data=null,message=null} = summaryResult || {};
+
+        if(data?.summary) {
           //summarize the pdf using AI and save the summary to database
           storeResult = await storePdfSummaryAction({
             summary: data?.summary,
-            fileUrl: response[0]?.serverData.file.url,
-            title: data?.title || file?.name,
+            fileUrl: uploadFieUrl,
+            title: formatedFileName,
             fileName: file?.name,
           });
 
@@ -101,7 +113,6 @@ export default function UploadForm() {
           //redirect to the [id] summary page
           router.push(`/summaries/${storeResult.data.id}`);
         }
-      }
     } catch (error) {
       console.log("error occured", error);
       setIsLoading(false);

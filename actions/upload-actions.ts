@@ -7,6 +7,8 @@ import { SUMMARY_SYSTEM_PROMPT } from "@/utils/prompts";
 import { auth } from "@clerk/nextjs/server";
 import {ChatGroq} from "@langchain/groq"
 import { revalidatePath } from "next/cache";
+import { title } from "process";
+import { success } from "zod";
 
 interface pdfSummaryType {
     userId :string;
@@ -16,33 +18,12 @@ interface pdfSummaryType {
     fileName :string;
 }
 
-export default async function generatePdfSummary(
-    uploadResponse : [{
-        serverData :{
-            uploadedBy:string,
-            file : {
-                ufsUrl :string ;
-                name :string ;
-            };
-        };
-    }] 
-){
-    if(!uploadResponse){
-        return {
-            success : false,
-            message : 'File upload failed',
-            data :null,
-        };
-    }
-    
-    const {
-        serverData: {
-            uploadedBy, 
-            file : {ufsUrl :pdfUrl,name:fileName},
-        },
-    } = uploadResponse[0];
-
-    if(!pdfUrl){
+export async function generatePdfText({
+    fileUrl
+    }:{
+    fileUrl :string;
+    }){
+    if(!fileUrl){
         return {
             success : false,
             message : 'File upload failed',
@@ -51,20 +32,48 @@ export default async function generatePdfSummary(
     }
 
     try{
-        const pdfText = await fetchAndExtractOdfText(pdfUrl);
-        if (!pdfText || pdfText.trim() === "") {
-            throw new Error("Could not extract any readable text from this PDF.");
+        const pdfText = await fetchAndExtractOdfText(fileUrl);
+        if(!pdfText || pdfText.trim() === "") {
+            return{
+                success : false,
+                message : 'Could not extract any readable text from this PDF.',
+                data :null,
+            }
         }
-        
-        console.log("Extracted text length:", pdfText.length);
+        return {
+            success: true,
+            message: 'pdf text fetched successfuly',
+            data: {pdfText}
+        };
+    } catch(error){
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'failed to fetch and extract pdf text',
+            data: null,
+        };
+    }
+}
 
+export default async function generatePdfSummary({
+    pdfText,fileName
+    }:{
+    pdfText :string;
+    fileName :string;
+    }){
+    if(!pdfText){
+        return {
+            success : false,
+            message : 'File upload failed',
+            data :null,
+        };
+    }
+
+    try{
         const model = new ChatGroq({
             model: "llama-3.3-70b-versatile", 
             apiKey: process.env.GROQ_API_KEY,
             temperature: 0.3, 
         });
-
-        console.log("Sending text to Groq for summarization...");
         
         const aiResponse = await model.invoke([
             ["system", SUMMARY_SYSTEM_PROMPT],
@@ -76,11 +85,11 @@ export default async function generatePdfSummary(
             success: true,
             message: 'Summary generated successfuly',
             data: {
+                title:fileName,
                 summary : summaryMarkdown,
                 }
         };
     } catch(error){
-        console.error("Error generating summary:", error); 
         return {
             success: false,
             message: error instanceof Error ? error.message : 'An unexpected error occurred',
@@ -137,6 +146,7 @@ export async function storePdfSummaryAction({fileUrl,summary,title,fileName} : p
         return {
             success: false,
             message:error instanceof Error ? error.message : 'Error saving pdf summary',
+            data: null
         }
     }
 
