@@ -76,4 +76,13 @@ export const listVariants: Variants ={
   }
 }
 
-export const Dummy_Summary = "hy this is durgesh"
+export const Dummy_Summary = {
+  title: "Key Highlights",
+  subtitle: "Important points from this document",
+  points: [
+    "Extracted the most relevant information",
+    "Time-saving AI processing",
+    "Accurate and concise summary",
+    "Easy to understand and read",
+  ],
+};

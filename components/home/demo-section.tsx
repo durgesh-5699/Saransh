@@ -1,6 +1,6 @@
 import { Pizza } from "lucide-react";
 import { MotionDiv, MotionH3 } from "../common/motion-wrapper";
-import { SummaryViewer } from "../summaries/summary-viewer";
+import { SummaryViewer } from "./summary-viewer";
 import { Dummy_Summary } from "@/utils/constants";
 
 export default function DemoSection() {
