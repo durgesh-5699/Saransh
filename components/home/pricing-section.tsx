@@ -73,7 +73,7 @@ const PricingCard = ({
         </MotionDiv>
         <MotionDiv variants={listVariants} className="space-y-2 flex justify-center w-full">
           <Link href={paymentLink} className={cn("w-full rounded-full flex items-center justify-center gap-2 bg-linear-to-r from-rose-800 to-rose-500 hover:from-rose-500 hover:to-rose-800 text-white border-2 py-2",id==='pro'?'border-rose-900':'border-rose-100 from-rose-400 to-rose-500')}>
-          Buy Now
+            Buy Now
           <ArrowRight size={18}/>
           </Link>
         </MotionDiv>
