@@ -5,7 +5,7 @@ export const parseSection = (section: string):{title:string;points:string[]} => 
     ? title.substring(1).trim()
     : title.trim();
 
-  const points: String[] = [];
+  const points: string[] = [];
 
   let currentPoint = "";
 
