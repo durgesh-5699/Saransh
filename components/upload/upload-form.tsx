@@ -66,7 +66,8 @@ export default function UploadForm() {
       }
 
       toast.loading(`Uploading PDF... \n We are uploading your PDF!`);
-      //upload the file to uploadthing
+
+      //uploading the file to uploadthing
       const uploadResponse = await startUpload([file]);
       toast.dismiss();
       if (!uploadResponse) {
@@ -78,41 +79,37 @@ export default function UploadForm() {
       toast.success("PDF uploaded successfully!");
 
       const uploadFieUrl = uploadResponse[0]?.serverData?.file?.url;
+      toast.dismiss();
+      let storeResult: any;
+      toast.info(`Hang tight! We are saving your summary! ✨`);
+      
+      const formatedFileName = formatFileNameAsTitle(file?.name);
       //parse the pdf using langchain
+      const result = await generatePdfText({
+        fileUrl: uploadFieUrl,
+      })
+      //generate pdf sumary using AI
+      const summaryResult = await generatePdfSummary({
+        pdfText:result?.data?.pdfText??'',
+        fileName:formatedFileName,
+      });
 
-
-        let storeResult: any;
-        toast.info(`Hang tight! We are saving your summary! ✨`);
-          
-          const formatedFileName = formatFileNameAsTitle(file?.name);
-
-          const result = await generatePdfText({
-            fileUrl: uploadFieUrl,
-          })
-           const summaryResult = await generatePdfSummary({
-            pdfText:result?.data?.pdfText??'',
-            fileName:formatedFileName,
-          });
-
-          const {data=null,message=null} = summaryResult || {};
-
-        if(data?.summary) {
-          //summarize the pdf using AI and save the summary to database
-          storeResult = await storePdfSummaryAction({
-            summary: data?.summary,
-            fileUrl: uploadFieUrl,
-            title: formatedFileName,
-            fileName: file?.name,
-          });
-
-          toast.success(
-            `Your PDF has been successfully summarized and saved ✨`,
-          );
-          formRef.current?.reset();
-          console.log("this is storeResult : ", storeResult);
-          //redirect to the [id] summary page
-          router.push(`/summaries/${storeResult.data.id}`);
-        }
+      const {data=null,message=null} = summaryResult || {};
+      if(data?.summary) {
+        //save the summary to database
+        storeResult = await storePdfSummaryAction({
+          summary: data?.summary,
+          fileUrl: uploadFieUrl,
+          title: formatedFileName,
+          fileName: file?.name,
+        });
+        
+        toast.dismiss();
+        toast.success(`Your PDF has been successfully summarized and saved ✨`);
+        formRef.current?.reset();
+        //redirect to the [id] summary page
+        router.push(`/summaries/${storeResult.data.id}`);
+      }
     } catch (error) {
       console.log("error occured", error);
       setIsLoading(false);
